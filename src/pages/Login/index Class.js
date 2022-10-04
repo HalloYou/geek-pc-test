@@ -1,35 +1,25 @@
-import { Component, useState } from 'react';
-import { Card, Button, Checkbox, Form, Input, message } from 'antd'
+import { Component } from 'react';
+import { Card, Button, Checkbox, Form, Input } from 'antd'
 import logo from 'assets/logo.png';
 import "./index.scss"
 import { login } from 'api/user'
-import { useNavigate } from "react-router-dom";
+
+
 
 //如去首页
 // navigate("/home");
-const Login = () => {
-  const navigate = useNavigate();
-  const onFinish = async ({ mobile, code }) => {
-    setLoding(true);
-    try {
-      let res = await login(mobile, code);
-      message.success("登录成功", 1, () => {
-        localStorage.setItem('token', res.data.token)
-        navigate("/home");
-      })
-    } catch (error) {
-      message.error("登录失败！")
-      setLoding(false);
-    }
 
+class Login extends Component {
+  constructor() {
+    super()
   }
-  const [loading, setLoding] = useState(false);
-  return (
-    <div className='login'>
+  state = {}
+  render() {
+    return (<div className='login'>
       <Card className='login-container'>
         <img className='login-logo' src={logo} alt="" />
 
-        <Form size='large' onFinish={onFinish} initialValues={{ mobile: '13633032266', code: '246810', agree: true }}>
+        <Form size='large' onFinish={this.onFinish} initialValues={{ mobile: '13633032266', code: '246810', agree: true }}>
           <Form.Item name="mobile" rules={[{ required: true, message: "手机号不能为空" }, { pattern: /^1[3-9]\d{9}/, message: "手机号格式错误" }]}>
             <Input placeholder='请输入你的手机号' autoComplete='off' />
           </Form.Item>
@@ -55,15 +45,27 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block loading={loading}>
+            <Button type="primary" htmlType="submit" block>
               登录
             </Button>
           </Form.Item>
         </Form>
       </Card>
-    </div>
-  )
-}
+    </div>);
+  }
+  onFinish = async ({ mobile, code }) => {
 
+    try {
+      let res = await login(mobile, code);
+      console.log(res, this);
+      localStorage.setItem('token', res.data.token)
+      // this.navigate('/home')
+      // this.props.history.push('/home')
+    } catch (error) {
+      alert("登录失败！")
+    }
+
+  }
+}
 
 export default Login;

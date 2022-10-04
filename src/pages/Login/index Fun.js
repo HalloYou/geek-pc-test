@@ -1,4 +1,4 @@
-import { Component, useState } from 'react';
+import { Component } from 'react';
 import { Card, Button, Checkbox, Form, Input, message } from 'antd'
 import logo from 'assets/logo.png';
 import "./index.scss"
@@ -10,20 +10,22 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
   const onFinish = async ({ mobile, code }) => {
-    setLoding(true);
+    state.loading = true
     try {
       let res = await login(mobile, code);
       message.success("登录成功", 1, () => {
         localStorage.setItem('token', res.data.token)
-        navigate("/home");
+        // navigate("/home");
       })
+      // this.props.history.push('/home')
     } catch (error) {
       message.error("登录失败！")
-      setLoding(false);
     }
 
   }
-  const [loading, setLoding] = useState(false);
+  const state = {
+    loading: false
+  }
   return (
     <div className='login'>
       <Card className='login-container'>
@@ -55,7 +57,7 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block loading={loading}>
+            <Button type="primary" htmlType="submit" block loading={state.loading}>
               登录
             </Button>
           </Form.Item>
